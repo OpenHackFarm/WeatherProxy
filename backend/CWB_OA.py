@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+'''
+https://works.ioa.tw/weather/api/doc/index.html
+'''
+
+import requests
+import json
+
 
 class CWB_OA:
-    @property
-    def get_realtime(self):
-        return "CWB Realtime data."
+    def get_realtime(self, id):
+        r = requests.get('https://works.ioa.tw/weather/api/weathers/%s.json' % str(id))
 
-    @property
+        return json.dumps(r.json())
+
     def get_forecast(self):
-        return "CWB Forecast data."
+        pass
