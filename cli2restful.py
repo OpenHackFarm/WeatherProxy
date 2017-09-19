@@ -4,6 +4,7 @@
 from flask import Flask, request, Response
 import subprocess
 import argparse
+import json
 
 HOST = '127.0.0.1'  # '0.0.0.0'
 PORT = '5000'
@@ -31,6 +32,11 @@ def hello():
                             stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
     out, err = p.communicate()
+
+    try:
+        json.loads(out)
+    except ValueError:
+        out = json.dumps({'stdout': out})
 
     return Response(
         response=out,
