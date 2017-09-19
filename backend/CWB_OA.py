@@ -17,3 +17,6 @@ class CWB_OA:
 
     def get_forecast(self):
         pass
+
+    def get_towns(self):
+        return 'Check https://github.com/OpenHackFarm/works.ioa.tw'

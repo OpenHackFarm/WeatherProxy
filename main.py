@@ -9,10 +9,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--backend', type=str)
+    parser.add_argument('--get', dest='query', choices=['realtime', 'forecast', 'towns'], default='realtime')
     parser.add_argument('--id', type=str)
 
     args = parser.parse_args()
 
     w = WeatherProxy(args.backend)
 
-    print w.get_realtime(args.id)
+    if args.id:
+        print getattr(w, 'get_' + args.query)(args.id)
+    else:
+        print getattr(w, 'get_' + args.query)()
