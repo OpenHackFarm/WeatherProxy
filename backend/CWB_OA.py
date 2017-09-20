@@ -6,6 +6,7 @@ https://works.ioa.tw/weather/api/doc/index.html
 '''
 
 import requests
+import json
 
 from utils import remap_column
 
@@ -31,4 +32,6 @@ class CWB_OA:
         pass
 
     def get_towns(self):
-        return 'Check https://github.com/OpenHackFarm/works.ioa.tw'
+        r = requests.get('https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json')
+
+        return json.dumps(r.json())
