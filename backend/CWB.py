@@ -2,7 +2,16 @@
 # encoding: utf-8
 
 '''
+Dataset
 https://opendata.cwb.gov.tw/datalist
+
+
+How to use cwb-cache library:
+---------------------------------------------------------------
+$ cd thirdparty/
+$ git clone https://github.com/leafwind/cwb-cache.git
+$ echo "AUTH_KEY = 'YOUR_AUTH_KEY'" > cwb-cache/cwb_auth_key.py
+---------------------------------------------------------------
 '''
 
 import json
