@@ -10,7 +10,6 @@ from WeatherProxy import WeatherProxy
 w = WeatherProxy('CWB_OA')
 
 print w.get_realtime(57)
-
 ```
 
 Run in command line
@@ -18,6 +17,7 @@ Run in command line
 Get current weather
 ```
 $ python main.py --backend 'CWB_OA' --id 57
+```
 
 Get forecast
 ```
