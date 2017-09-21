@@ -21,8 +21,17 @@ sys.path.append('thirdparty/cwb-cache')
 
 from forecast_36hr import get_data_from_cwb, AUTH_KEY
 
+from utils import remap_dict_columns
+
 
 class CWB:
+    forecast_column_map = {
+        "WeatherDescription": "description",
+        "RH": "humidity",
+        "MaxT": "max_temp_c",
+        "MinT": "min_temp_c"
+    }
+
     @property
     def get_realtime(self):
         return "CWB Realtime data."
@@ -45,6 +54,6 @@ class CWB:
 
         forecast_list = []
         for forecast in sorted(forecast_dict.items()):
-            forecast_list.append(forecast[1])
+            forecast_list.append(remap_dict_columns(forecast[1], self.forecast_column_map))
 
         return json.dumps(forecast_list)
