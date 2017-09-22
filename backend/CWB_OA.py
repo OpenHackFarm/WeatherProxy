@@ -27,7 +27,7 @@ class CWB_OA:
     def get_realtime(self, id):
         r = requests.get('https://works.ioa.tw/weather/api/weathers/%s.json' % str(id))
 
-        return json.dumps(remap_dict_columns(r.json(), self.realtime_column_map, drop=True))
+        return json.dumps([remap_dict_columns(r.json(), self.realtime_column_map, drop=True)])
 
     def get_forecast(self):
         pass
