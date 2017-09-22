@@ -3,6 +3,9 @@
 
 
 class WeatherProxy(object):
-    def __new__(self, backend):
+    def __new__(self, backend, key=None):
         mod = __import__('backend.' + backend, fromlist=[backend])
-        return getattr(mod, backend)()
+        if key:
+            return getattr(mod, backend)(key)
+        else:
+            return getattr(mod, backend)()
