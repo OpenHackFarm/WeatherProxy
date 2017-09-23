@@ -34,8 +34,8 @@ def hello():
     out, err = p.communicate()
 
     try:
-        json.loads(out)
-    except ValueError:
+        out = json.dumps(eval(out.strip()))
+    except Exception, e:
         out = json.dumps({'stdout': out})
 
     return Response(

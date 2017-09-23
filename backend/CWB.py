@@ -14,8 +14,6 @@ $ echo "AUTH_KEY = 'YOUR_AUTH_KEY'" > cwb-cache/cwb_auth_key.py
 ---------------------------------------------------------------
 '''
 
-import json
-
 import sys
 sys.path.append('thirdparty/cwb-cache')
 
@@ -56,4 +54,4 @@ class CWB:
         for forecast in sorted(forecast_dict.items()):
             forecast_list.append(remap_dict_columns(forecast[1], self.forecast_column_map))
 
-        return json.dumps(forecast_list)
+        return [forecast_list]

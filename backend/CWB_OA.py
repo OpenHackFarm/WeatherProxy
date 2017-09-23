@@ -6,7 +6,6 @@ https://works.ioa.tw/weather/api/doc/index.html
 '''
 
 import requests
-import json
 
 from utils import remap_dict_columns
 
@@ -27,7 +26,7 @@ class CWB_OA:
     def get_realtime(self, id):
         r = requests.get('https://works.ioa.tw/weather/api/weathers/%s.json' % str(id))
 
-        return json.dumps([remap_dict_columns(r.json(), self.realtime_column_map, drop=True)])
+        return [remap_dict_columns(r.json(), self.realtime_column_map, drop=True)]
 
     def get_forecast(self):
         pass
@@ -35,4 +34,4 @@ class CWB_OA:
     def get_towns(self):
         r = requests.get('https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json')
 
-        return json.dumps(r.json())
+        return r.json()
