@@ -2,15 +2,10 @@
 # encoding: utf-8
 
 '''
-csparpa/pyowm
-https://github.com/csparpa/pyowm/blob/master/pyowm/docs/usage-examples.md
-
-```
-# pip install pyown
-```
+https://openweathermap.org/api
 '''
 
-import pyowm
+import requests
 import json
 
 import pytemperature
@@ -19,26 +14,26 @@ from utils import remap_dict_columns
 
 class OWM:
     realtime_column_map = {
+        "main": "condition",
         "temp": "temp_c",
         "humidity": "humidity",
-        "detailed_status": "condition",
-        "press": "pressure",
-        "sunset_time": "sunset",
-        "sunrise_time": "sunrise"
+        "pressure": "pressure",
+        "sunset": "sunset",
+        "sunrise": "sunrise"
     }
 
     def __init__(self, API_KEY):
-        self.owm = pyowm.OWM(API_KEY)
+        self.API_KEY = API_KEY
 
-    def get_realtime(self, lat, lon):
+    def get_realtime(self, id):
         realtime = {}
 
-        obs = self.owm.weather_at_coords(lat, lon)
-        response = obs.get_weather().to_JSON()
+        r = requests.get('http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (str(id), self.API_KEY))
 
-        realtime = remap_dict_columns(json.loads(response), self.realtime_column_map, drop=True)
-        realtime.update(remap_dict_columns(json.loads(response)['temperature'], self.realtime_column_map, drop=True))
-        realtime.update(remap_dict_columns(json.loads(response)['pressure'], self.realtime_column_map, drop=True))
+        realtime.update(remap_dict_columns(r.json()['weather'][0], self.realtime_column_map, drop=True))
+        realtime.update(remap_dict_columns(r.json()['main'], self.realtime_column_map, drop=True))
+        realtime.update(remap_dict_columns(r.json()['sys'], self.realtime_column_map, drop=True))
+        realtime.update(r.json()['coord'])
 
         realtime['temp_c'] = round(pytemperature.k2c(realtime['temp_c']), 2)
 
