@@ -13,8 +13,8 @@ from utils import remap_dict_columns
 class CWB_OA:
     realtime_column_map = {
         "rainfall": "rain",
-        "temperature": "temp_c",
-        "felt_air_temp": "felt_temp_c",
+        "temperature": "temperature_c",
+        "felt_air_temp": "felt_temperature_c",
         "humidity": 'humidity',
         "sunset": "sunset",
         "at": "datetime",

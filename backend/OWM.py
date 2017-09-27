@@ -15,7 +15,7 @@ from utils import remap_dict_columns
 class OWM:
     realtime_column_map = {
         "main": "condition",
-        "temp": "temp_c",
+        "temp": "temperature_c",
         "humidity": "humidity",
         "pressure": "pressure",
         "sunset": "sunset",
@@ -35,7 +35,7 @@ class OWM:
         realtime.update(remap_dict_columns(r.json()['sys'], self.realtime_column_map, drop=True))
         realtime.update(r.json()['coord'])
 
-        realtime['temp_c'] = round(pytemperature.k2c(realtime['temp_c']), 2)
+        realtime['temperature_c'] = round(pytemperature.k2c(realtime['temperature_c']), 2)
 
         return json.dumps([realtime])
 

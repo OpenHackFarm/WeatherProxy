@@ -26,8 +26,8 @@ class CWB:
     forecast_column_map = {
         "WeatherDescription": "description",
         "RH": "humidity",
-        "MaxT": "max_temp_c",
-        "MinT": "min_temp_c"
+        "MaxT": "max_temperature_c",
+        "MinT": "min_temperature_c"
     }
 
     @property
