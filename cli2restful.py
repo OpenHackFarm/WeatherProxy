@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 from flask import Flask, request, Response
+from flask_cors import CORS
 import subprocess
 import argparse
 import json
@@ -10,6 +11,7 @@ HOST = '127.0.0.1'  # '0.0.0.0'
 PORT = '5000'
 
 app = Flask(__name__)
+CORS(app)
 
 
 def urlQuery2argumentList(url_query_parameter):
