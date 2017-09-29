@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--backend', type=str)
     parser.add_argument('--key', type=str)
-    parser.add_argument('--get', dest='query', choices=['realtime', 'forecast', 'towns'], default='realtime')
+    parser.add_argument('--get', dest='query', choices=['weather_demo', 'realtime', 'forecast', 'town', 'towns'], default='realtime')
     parser.add_argument('--id', type=str)
     parser.add_argument('--dataset', type=str)
     parser.add_argument('--town_index', type=str)
