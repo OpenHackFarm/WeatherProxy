@@ -54,4 +54,4 @@ class CWB:
         for forecast in sorted(forecast_dict.items()):
             forecast_list.append(remap_dict_columns(forecast[1], self.forecast_column_map))
 
-        return [forecast_list]
+        return forecast_list
