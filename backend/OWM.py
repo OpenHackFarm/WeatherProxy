@@ -25,15 +25,21 @@ class OWM:
     def __init__(self, API_KEY):
         self.API_KEY = API_KEY
 
-    def get_realtime(self, id):
+    # def get_realtime(self, id):
+    def get_realtime(self, lat, lng):
         realtime = {}
 
-        r = requests.get('http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (str(id), self.API_KEY))
+        url = 'http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (str(id), self.API_KEY)
+        url = 'http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=%s' % (str(lat), str(lng), self.API_KEY)
+
+        r = requests.get(url)
 
         realtime.update(remap_dict_columns(r.json()['weather'][0], self.realtime_column_map, drop=True))
         realtime.update(remap_dict_columns(r.json()['main'], self.realtime_column_map, drop=True))
         realtime.update(remap_dict_columns(r.json()['sys'], self.realtime_column_map, drop=True))
         realtime.update(r.json()['coord'])
+        realtime.update({'id': r.json()['id']})
+        realtime.update({'city': r.json()['name']})
 
         realtime['temperature_c'] = round(pytemperature.k2c(realtime['temperature_c']), 2)
 
