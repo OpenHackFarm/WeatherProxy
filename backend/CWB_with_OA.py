@@ -15,7 +15,7 @@ class CWB_with_OA:
         self.cwb_oa = CWB_OA()
 
     def get_weather_demo(self):
-        return {'current': self.get_realtime('57')[0],
+        return {'current': self.get_realtime('57'),
                 'forecast': self.get_forecast('F-D0047-003', '9'),
                 'location': self.get_town('57')
                 }
