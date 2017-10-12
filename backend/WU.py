@@ -41,6 +41,7 @@ class WU:
         current.update(remap_dict_columns(r['observation_location'], self.current_column_map, drop=True))
 
         current['wind_speed'] = current['wind_speed'] * 0.27777777777778  # kph to mps
+        current['url'] = url
 
         return current
 
