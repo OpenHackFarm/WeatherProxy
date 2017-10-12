@@ -11,7 +11,7 @@ from utils import remap_dict_columns
 
 
 class WU:
-    realtime_column_map = {
+    current_column_map = {
         "latitude": "latitude",
         "longitude": "longitude",
         "city": "city",
@@ -37,10 +37,11 @@ class WU:
         r = r.json()['current_observation']
         # return r
 
-        current.update(remap_dict_columns(r, self.realtime_column_map, drop=True))
-        current.update(remap_dict_columns(r['observation_location'], self.realtime_column_map, drop=True))
+        current.update(remap_dict_columns(r, self.current_column_map, drop=True))
+        current.update(remap_dict_columns(r['observation_location'], self.current_column_map, drop=True))
 
         current['wind_speed'] = current['wind_speed'] * 0.27777777777778  # kph to mps
+
         return current
 
     def get_forecast(self, lat, lng):
