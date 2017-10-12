@@ -11,7 +11,7 @@ from utils import remap_dict_columns
 
 
 class CWB_OA:
-    realtime_column_map = {
+    current_column_map = {
         "rainfall": "rain",
         "temperature": "temperature_c",
         "felt_air_temp": "felt_temperature_c",
@@ -28,9 +28,16 @@ class CWB_OA:
     }
 
     def get_realtime(self, id):
-        r = requests.get('https://works.ioa.tw/weather/api/weathers/%s.json' % str(id))
+        current = {}
 
-        return [remap_dict_columns(r.json(), self.realtime_column_map, drop=True)]
+        url = 'https://works.ioa.tw/weather/api/weathers/%s.json' % str(id)
+
+        r = requests.get(url)
+
+        current = remap_dict_columns(r.json(), self.current_column_map, drop=True)
+        current.update({'url': url})
+
+        return current
 
     def get_forecast(self):
         pass
@@ -39,7 +46,9 @@ class CWB_OA:
         return [_ for i, _ in enumerate(self.get_towns()) if _['id'] == str(id)][0]
 
     def get_towns(self):
-        r = requests.get('https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json')
+        url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
+
+        r = requests.get(url)
 
         # return sorted(r.json(), key=lambda k: int(k['id']))
 
