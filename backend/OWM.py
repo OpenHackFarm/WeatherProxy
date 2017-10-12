@@ -9,12 +9,14 @@ import requests
 import json
 
 import pytemperature
-from utils import remap_dict_columns
+from utils import remap_dict_columns, measure_distance
 
 
 class OWM:
     current_column_map = {
         "main": "condition",
+        "lat": "latitude",
+        "lon": "longitude",
         "temp": "temperature_c",
         "humidity": "humidity",
         "pressure": "pressure",
@@ -37,12 +39,13 @@ class OWM:
         current.update(remap_dict_columns(r.json()['weather'][0], self.current_column_map, drop=True))
         current.update(remap_dict_columns(r.json()['main'], self.current_column_map, drop=True))
         current.update(remap_dict_columns(r.json()['sys'], self.current_column_map, drop=True))
-        current.update(r.json()['coord'])
+        current.update(remap_dict_columns(r.json()['coord'], self.current_column_map, drop=True))
         current.update({'id': r.json()['id']})
         current.update({'city': r.json()['name']})
         current.update({'url': url})
 
         current['temperature_c'] = round(pytemperature.k2c(current['temperature_c']), 2)
+        current['distance'] = measure_distance((lat, lng), (current['latitude'], current['longitude']))
 
         return current
 

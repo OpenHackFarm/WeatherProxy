@@ -7,7 +7,7 @@ https://www.wunderground.com/weather/api/d/docs
 
 import requests
 
-from utils import remap_dict_columns
+from utils import remap_dict_columns, measure_distance
 
 
 class WU:
@@ -41,7 +41,10 @@ class WU:
         current.update(remap_dict_columns(r['observation_location'], self.current_column_map, drop=True))
 
         current['wind_speed'] = current['wind_speed'] * 0.27777777777778  # kph to mps
+        current['latitude'] = float(current['latitude'])
+        current['longitude'] = float(current['longitude'])
         current['url'] = url
+        current['distance'] = measure_distance((lat, lng), (current['latitude'], current['longitude']))
 
         return current
 
