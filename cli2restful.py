@@ -7,8 +7,8 @@ import subprocess
 import argparse
 import json
 
-HOST = '127.0.0.1'  # '0.0.0.0'
-PORT = '5000'
+HOST = '0.0.0.0'  # '127.0.0.1'
+PORT = '8001'
 
 app = Flask(__name__)
 CORS(app)
