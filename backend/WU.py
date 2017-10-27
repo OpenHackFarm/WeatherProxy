@@ -77,9 +77,21 @@ class WU:
                 if max_distance and max_distance < distance_km:
                     pass
                 else:
+                    s['source'] = 'WU'
+                    s['type'] = 'airport'
                     s['distance_km'] = distance_km
                     stations.append(remap_dict_columns(s, self.station_column_map))
 
-        # for s in r.json()['location']['nearby_weather_stations']['pws']['station']:
+        for s in r.json()['location']['nearby_weather_stations']['pws']['station']:
+            if s['lat'] and s['lon']:
+                distance_km = measure_distance((lat, lng), (float(s['lat']), float(s['lon'])))
+                if max_distance and max_distance < distance_km:
+                    pass
+                else:
+                    s['source'] = 'WU'
+                    s['type'] = 'pws'
+                    s['distance_km'] = distance_km
+                    stations.append(remap_dict_columns(s, self.station_column_map))
 
-        return stations
+        return sorted(stations, key=lambda k: int(k['distance_km']))
+
