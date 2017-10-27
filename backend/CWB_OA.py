@@ -6,6 +6,8 @@ https://works.ioa.tw/weather/api/doc/index.html
 '''
 
 import requests
+import os.path
+import json
 from scipy import spatial
 
 from utils import remap_dict_columns, measure_distance
@@ -47,14 +49,19 @@ class CWB_OA:
         return [_ for i, _ in enumerate(self.get_towns()) if _['id'] == str(id)][0]
 
     def get_towns(self):
-        url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
+        _ = None
+        if os.path.isfile('thirdparty/works.ioa.tw/towns.json'):
+            with open('thirdparty/works.ioa.tw/towns.json') as json_data:
+                _ = json.load(json_data)
+        else:
+            url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
 
-        r = requests.get(url)
+            r = requests.get(url)
 
-        # return sorted(r.json(), key=lambda k: int(k['id']))
+            _ = r.json()
 
         towns = []
-        for town in sorted(r.json(), key=lambda k: int(k['id'])):
+        for town in _:
             towns.append(remap_dict_columns(town, self.township_column_map))
 
         return towns
@@ -62,11 +69,17 @@ class CWB_OA:
     def get_stations(self, lat, lng, max_distance=None):
         stations = []
 
-        url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
+        all_stations = None
+        if os.path.isfile('thirdparty/works.ioa.tw/towns.json'):
+            with open('thirdparty/works.ioa.tw/towns.json') as json_data:
+                all_stations = json.load(json_data)
+        else:
+            url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
 
-        r = requests.get(url)
+            r = requests.get(url)
 
-        all_stations = r.json()
+            all_stations = r.json()
+
         all_coords = [(float(s['position']['lat']), float(s['position']['lng'])) for s in all_stations]
         # return all_coord[0]
 
