@@ -6,8 +6,9 @@ https://works.ioa.tw/weather/api/doc/index.html
 '''
 
 import requests
+from scipy import spatial
 
-from utils import remap_dict_columns
+from utils import remap_dict_columns, measure_distance
 
 
 class CWB_OA:
@@ -57,3 +58,30 @@ class CWB_OA:
             towns.append(remap_dict_columns(town, self.township_column_map))
 
         return towns
+
+    def get_stations(self, lat, lng, max_distance=None):
+        stations = []
+
+        url = 'https://raw.githubusercontent.com/OpenHackFarm/works.ioa.tw/master/towns.json'
+
+        r = requests.get(url)
+
+        all_stations = r.json()
+        all_coords = [(float(s['position']['lat']), float(s['position']['lng'])) for s in all_stations]
+        # return all_coord[0]
+
+        tree = spatial.KDTree(all_coords)
+        nearest = tree.query([(lat, lng)], 10)
+        # print nearest[1][0]
+
+        for i in nearest[1][0]:
+            if all_stations[i]['position']['lat'] and all_stations[i]['position']['lng']:
+                distance_km = measure_distance((lat, lng), (float(all_stations[i]['position']['lat']), float(all_stations[i]['position']['lng'])))
+                if max_distance and max_distance < distance_km:
+                    pass
+                else:
+                    all_stations[i]['distance_km'] = distance_km
+                    # stations.append(remap_dict_columns(all_stations[i], self.station_column_map))
+                    stations.append(all_stations[i])
+
+        return stations
