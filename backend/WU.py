@@ -23,9 +23,15 @@ class WU:
         "wind_kph": "wind_speed"
     }
 
+    station_column_map = {
+        "lat": "latitude",
+        "lon": "longitude"
+    }
+
     def __init__(self, API_KEY):
         self.API_KEY = API_KEY
         self.url_base = 'http://api.wunderground.com/api/%s/conditions/forecast10day/q/' % self.API_KEY
+        self.url_lookup = 'http://api.wunderground.com/api/%s/geolookup/q/' % self.API_KEY
 
     # def get_realtime(self, id):
     def get_realtime(self, lat, lng):
@@ -56,3 +62,24 @@ class WU:
         r = requests.get(url)
         r = r.json()['forecast']
         return r
+
+    def get_stations(self, lat, lng, max_distance=None):
+        stations = []
+
+        url = self.url_lookup + '%s,%s.json' % (lat, lng)
+
+        r = requests.get(url)
+        # return r.json()['location']['nearby_weather_stations']
+
+        for s in r.json()['location']['nearby_weather_stations']['airport']['station']:
+            if s['lat'] and s['lon']:
+                distance_km = measure_distance((lat, lng), (float(s['lat']), float(s['lon'])))
+                if max_distance and max_distance < distance_km:
+                    pass
+                else:
+                    s['distance_km'] = distance_km
+                    stations.append(remap_dict_columns(s, self.station_column_map))
+
+        # for s in r.json()['location']['nearby_weather_stations']['pws']['station']:
+
+        return stations
