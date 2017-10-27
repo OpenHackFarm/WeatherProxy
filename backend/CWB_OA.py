@@ -27,7 +27,7 @@ class CWB_OA:
         "name": "township"
     }
 
-    def get_realtime(self, id):
+    def get_current(self, id):
         current = {}
 
         url = 'https://works.ioa.tw/weather/api/weathers/%s.json' % str(id)

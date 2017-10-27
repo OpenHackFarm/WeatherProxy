@@ -15,13 +15,13 @@ class CWB_with_OA:
         self.cwb_oa = CWB_OA()
 
     def get_weather_demo(self):
-        return {'current': self.get_realtime('57'),
+        return {'current': self.get_current('57'),
                 'forecast': self.get_forecast('F-D0047-003', '9'),
                 'location': self.get_town('57')
                 }
 
-    def get_realtime(self, id):
-        return self.cwb_oa.get_realtime(id)
+    def get_current(self, id):
+        return self.cwb_oa.get_current(id)
 
     def get_forecast(self, dataset_id, town_index):
         return self.cwb.get_forecast(dataset_id, town_index)

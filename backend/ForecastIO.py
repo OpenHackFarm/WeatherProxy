@@ -4,7 +4,7 @@
 
 class ForecastIO:
     @property
-    def get_realtime(self):
+    def get_current(self):
         return "Forecast.io Realtime data."
 
     @property

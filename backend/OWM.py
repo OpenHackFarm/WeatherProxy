@@ -27,8 +27,8 @@ class OWM:
     def __init__(self, API_KEY):
         self.API_KEY = API_KEY
 
-    # def get_realtime(self, id):
-    def get_realtime(self, lat, lng):
+    # def get_current(self, id):
+    def get_current(self, lat, lng):
         current = {}
 
         # url = 'http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (str(id), self.API_KEY)

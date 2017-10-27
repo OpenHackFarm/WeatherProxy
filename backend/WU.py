@@ -33,8 +33,8 @@ class WU:
         self.url_base = 'http://api.wunderground.com/api/%s/conditions/forecast10day/q/' % self.API_KEY
         self.url_lookup = 'http://api.wunderground.com/api/%s/geolookup/q/' % self.API_KEY
 
-    # def get_realtime(self, id):
-    def get_realtime(self, lat, lng):
+    # def get_current(self, id):
+    def get_current(self, lat, lng):
         current = {}
 
         url = self.url_base + '%s,%s.json' % (lat, lng)

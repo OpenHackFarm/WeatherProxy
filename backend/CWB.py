@@ -33,7 +33,7 @@ class CWB:
     }
 
     @property
-    def get_realtime(self):
+    def get_current(self):
         return "CWB Realtime data."
 
     def get_forecast(self, dataset_id, town_index):
