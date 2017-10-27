@@ -93,6 +93,7 @@ class CWB_OA:
                 if max_distance and max_distance < distance_km:
                     pass
                 else:
+                    all_stations[i]['source'] = 'CWB_OA'
                     all_stations[i]['distance_km'] = distance_km
                     # stations.append(remap_dict_columns(all_stations[i], self.station_column_map))
                     stations.append(all_stations[i])
