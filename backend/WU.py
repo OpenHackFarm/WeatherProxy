@@ -55,13 +55,30 @@ class WU:
         return current
 
     def get_forecast(self, lat, lng):
-        forecast = {}
+        forecast = []
 
         url = self.url_base + '%s,%s.json' % (lat, lng)
 
         r = requests.get(url)
-        r = r.json()['forecast']
-        return r
+        # return r.json()['forecast']
+        r = r.json()['forecast']['simpleforecast']['forecastday']
+        # return r
+
+        for f in r:
+            forecast_dict = {}
+            forecast_dict['condition'] = f['conditions']
+            forecast_dict['condition_code'] = f['icon']
+            forecast_dict['max_temperature_c'] = f['high']['celsius']
+            forecast_dict['min_temperature_c'] = f['low']['celsius']
+            forecast_dict['humidity'] = f['avehumidity']
+            forecast_dict['PoP'] = f['pop']
+            forecast_dict['wind_direction'] = f['avewind']['dir']
+            forecast_dict['wind_speed_mph'] = f['avewind']['mph']
+            forecast_dict['start_time'] = "%s-%s-%s %s:%s:00" % (f['date']['year'], f['date']['month'], f['date']['day'], f['date']['hour'], f['date']['min'])
+
+            forecast.append(forecast_dict)
+
+        return forecast
 
     def get_stations(self, lat, lng, max_distance=None):
         stations = []
