@@ -36,7 +36,9 @@ http://127.0.0.1:5000/?backend=CWB_with_OA&get=weather_demo
 
 # Current
 http://127.0.0.1:5000/?backend=CWB_OA&id=57
-http://127.0.0.1:5000/?backend=OWM&key=YOUR_KEY_HERE&id=1674199
+http://127.0.0.1:8001/?backend=OWM&address=小間書菜&key=YOUR_KEY_HERE
+http://localhost:8001/?backend=WU&address=小間書菜&key=YOUR_KEY_HERE
+http://localhost:8001/?backend=ForecastIO&address=小間書菜&key=YOUR_KEY_HERE
 
 # Forecast
 http://127.0.0.1:5000/?backend=CWB&get=forecast&dataset=F-D0047-003&town_index=9
