@@ -6,6 +6,7 @@ https://www.wunderground.com/weather/api/d/docs
 '''
 
 import requests
+import dateutil.parser
 
 from utils import remap_dict_columns, measure_distance
 
@@ -50,7 +51,10 @@ class WU:
         current['latitude'] = float(current['latitude'])
         current['longitude'] = float(current['longitude'])
         current['url'] = url
+        current['humidity'] = float(current['humidity'].replace('%', ''))
+        current['pressure'] = float(current['pressure'])
         current['distance'] = measure_distance((lat, lng), (current['latitude'], current['longitude']))
+        current['datetime'] = dateutil.parser.parse(current['datetime']).strftime("%Y-%m-%d %H:%M:%S")
 
         return current
 
