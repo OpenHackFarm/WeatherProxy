@@ -11,6 +11,7 @@ import requests
 from datetime import datetime
 
 import pytemperature
+from address2latlng import address2latlng
 from utils import remap_dict_columns
 
 
@@ -40,16 +41,43 @@ class ForecastIO:
         self.API_KEY = API_KEY
         self.url_base = 'https://api.darksky.net/forecast/%s/' % self.API_KEY
 
-    def get_current(self, lat, lng):
-        current = {}
+    def _fetch_weather_data(self, **kwargs):
+        if 'lat' in kwargs and 'lng' in kwargs:
+            lat = kwargs['lat']
+            lng = kwargs['lng']
+        elif 'address' in kwargs:
+            coordinates = address2latlng(kwargs['address'])
+
+            lat = coordinates['data']['lat']
+            lng = coordinates['data']['lng']
+        else:
+            return
 
         url = self.url_base + '%s,%s' % (lat, lng)
 
         r = requests.get(url)
         r = r.json()
 
+        if r:
+            r['url'] = url
+
+        return r
+
+    def get_current(self, **kwargs):
+        """
+        parameters
+        ----------
+        lat : float
+        lng : float
+
+        address : str
+        """
+        current = {}
+
+        r = self._fetch_weather_data(**kwargs)
+
         current.update(remap_dict_columns(r['currently'], self.current_column_map, drop=True))
-        current.update({'url': url})
+        current.update({'url': r['url']})
 
         current['temperature_c'] = round(pytemperature.f2c(current['temperature_c']), 2)
         current['humidity'] = current['humidity'] * 100
@@ -57,14 +85,20 @@ class ForecastIO:
 
         return current
 
-    def get_forecast(self, lat, lng):
+    def get_forecast(self, **kwargs):
+        """
+        parameters
+        ----------
+        lat : float
+        lng : float
+
+        address : str
+        """
         forecast = []
 
-        url = self.url_base + '%s,%s' % (lat, lng)
-
-        r = requests.get(url)
-        # return r.json()
-        r = r.json()['daily']['data']
+        r = self._fetch_weather_data(**kwargs)
+        # return r
+        r = r['daily']['data']
         # return r
 
         for f in r:

@@ -10,6 +10,7 @@ import os.path
 import json
 from scipy import spatial
 
+from address2latlng import address2latlng
 from utils import remap_dict_columns, measure_distance
 
 
@@ -30,7 +31,24 @@ class CWB_OA:
         "name": "township"
     }
 
-    def get_current(self, id):
+    def get_current(self, **kwargs):
+        """
+        Parameters
+        ----------
+        id : int
+
+        lat : float
+        lng : float
+
+        address : str
+        """
+        if 'id' in kwargs:
+            id = kwargs['id']
+        elif ('lat' in kwargs and 'lng' in kwargs) or 'address' in kwargs:
+            id = self.get_stations(**kwargs)[0]['id']
+        else:
+            return
+
         current = {}
 
         url = 'https://works.ioa.tw/weather/api/weathers/%s.json' % str(id)
@@ -45,7 +63,13 @@ class CWB_OA:
     def get_forecast(self):
         pass
 
-    def get_town(self, id):
+    def get_town(self, **kwargs):
+        """
+        Parameters
+        ----------
+        id : int
+        """
+        id = kwargs['id']
         return [_ for i, _ in enumerate(self.get_towns()) if _['id'] == str(id)][0]
 
     def get_towns(self):
@@ -66,7 +90,27 @@ class CWB_OA:
 
         return towns
 
-    def get_stations(self, lat, lng, max_distance=None):
+    def get_stations(self, **kwargs):
+        """
+        Parameters
+        ----------
+        lat : float
+        lng : float
+
+        address : str
+
+        max_distance : float, optional
+        """
+        if 'address' in kwargs:
+            coordinates = address2latlng(kwargs['address'])
+            lat = coordinates['data']['lat']
+            lng = coordinates['data']['lng']
+        else:
+            lat = kwargs['lat']
+            lng = kwargs['lng']
+
+        max_distance = kwargs['max_distance'] if 'max_distance' in kwargs else None
+
         stations = []
 
         all_stations = None

@@ -36,7 +36,16 @@ class CWB:
     def get_current(self):
         return "CWB Realtime data."
 
-    def get_forecast(self, dataset_id, town_index):
+    def get_forecast(self, **kwargs):
+        """
+        Parameters
+        ----------
+        dataset : str
+        town_index : int
+        """
+        dataset_id = kwargs['dataset']
+        town_index = kwargs['town_index']
+
         forecast_dict = {}
         forecast_list = []
 

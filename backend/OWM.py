@@ -6,9 +6,9 @@ https://openweathermap.org/api
 '''
 
 import requests
-import json
 
 import pytemperature
+from address2latlng import address2latlng
 from utils import remap_dict_columns, measure_distance
 
 
@@ -27,12 +27,37 @@ class OWM:
     def __init__(self, API_KEY):
         self.API_KEY = API_KEY
 
-    # def get_current(self, id):
-    def get_current(self, lat, lng):
-        current = {}
+    def get_current(self, **kwargs):
+        """
+        Parameters
+        ----------
+        id : int
 
-        # url = 'http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (str(id), self.API_KEY)
-        url = 'http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=%s' % (str(lat), str(lng), self.API_KEY)
+        lat : float
+        lng : float
+
+        address : str
+        """
+        if 'id' in kwargs:
+            id = kwargs['id']
+
+            url = 'http://api.openweathermap.org/data/2.5/weather?id=%s&APPID=%s' % (id, self.API_KEY)
+        elif 'lat' in kwargs and 'lng' in kwargs:
+            lat = kwargs['lat']
+            lng = kwargs['lng']
+
+            url = 'http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=%s' % (lat, lng, self.API_KEY)
+        elif 'address' in kwargs:
+            coordinates = address2latlng(kwargs['address'])
+
+            lat = coordinates['data']['lat']
+            lng = coordinates['data']['lng']
+
+            url = 'http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&APPID=%s' % (lat, lng, self.API_KEY)
+        else:
+            return
+
+        current = {}
 
         r = requests.get(url)
 
@@ -45,7 +70,8 @@ class OWM:
         current.update({'url': url})
 
         current['temperature_c'] = round(pytemperature.k2c(current['temperature_c']), 2)
-        current['distance'] = measure_distance((lat, lng), (current['latitude'], current['longitude']))
+        if 'lat' in kwargs and 'lng' in kwargs:
+            current['distance'] = measure_distance((kwargs['lat'], kwargs['lng']), (current['latitude'], current['longitude']))
 
         return current
 

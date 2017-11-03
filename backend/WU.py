@@ -3,11 +3,14 @@
 
 '''
 https://www.wunderground.com/weather/api/d/docs
+
+https://www.wunderground.com/weather/api/d/docs?d=data/index#standard_request_url_format
 '''
 
 import requests
 import dateutil.parser
 
+from address2latlng import address2latlng
 from utils import remap_dict_columns, measure_distance
 
 
@@ -34,38 +37,83 @@ class WU:
         self.url_base = 'http://api.wunderground.com/api/%s/conditions/forecast10day/q/' % self.API_KEY
         self.url_lookup = 'http://api.wunderground.com/api/%s/geolookup/q/' % self.API_KEY
 
-    # def get_current(self, id):
-    def get_current(self, lat, lng):
-        current = {}
+    def _fetch_weather_data(self, **kwargs):
+        if 'id' in kwargs:
+            id = kwargs['id']
 
-        url = self.url_base + '%s,%s.json' % (lat, lng)
+            query = '%s' % id
+        elif 'lat' in kwargs and 'lng' in kwargs:
+            lat = kwargs['lat']
+            lng = kwargs['lng']
+
+            query = '%s,%s' % (lat, lng)
+        elif 'address' in kwargs:
+            coordinates = address2latlng(kwargs['address'])
+
+            lat = coordinates['data']['lat']
+            lng = coordinates['data']['lng']
+
+            query = '%s,%s' % (lat, lng)
+        else:
+            return
+
+        url = self.url_base + query + '.json'
 
         r = requests.get(url)
-        r = r.json()['current_observation']
-        # return r
+        r = r.json()
 
-        current.update(remap_dict_columns(r, self.current_column_map, drop=True))
-        current.update(remap_dict_columns(r['observation_location'], self.current_column_map, drop=True))
+        if r:
+            r['url'] = url
 
-        current['wind_speed'] = current['wind_speed'] * 0.27777777777778  # kph to mps
-        current['latitude'] = float(current['latitude'])
-        current['longitude'] = float(current['longitude'])
-        current['url'] = url
-        current['humidity'] = float(current['humidity'].replace('%', ''))
-        current['pressure'] = float(current['pressure'])
-        current['distance'] = measure_distance((lat, lng), (current['latitude'], current['longitude']))
-        current['datetime'] = dateutil.parser.parse(current['datetime']).strftime("%Y-%m-%d %H:%M:%S")
+        return r
+
+    def get_current(self, **kwargs):
+        """
+        parameters
+        ----------
+        id : int
+
+        lat : float
+        lng : float
+
+        address : str
+        """
+        current = {}
+
+        r = self._fetch_weather_data(**kwargs)
+
+        if r:
+            current.update(remap_dict_columns(r['current_observation'], self.current_column_map, drop=True))
+            current.update(remap_dict_columns(r['current_observation']['observation_location'], self.current_column_map, drop=True))
+
+            current['wind_speed'] = current['wind_speed'] * 0.27777777777778  # kph to mps
+            current['latitude'] = float(current['latitude'])
+            current['longitude'] = float(current['longitude'])
+            current['url'] = r['url']
+            current['humidity'] = float(current['humidity'].replace('%', ''))
+            current['pressure'] = float(current['pressure'])
+            current['datetime'] = dateutil.parser.parse(current['datetime']).strftime("%Y-%m-%d %H:%M:%S")
+            if 'lat' in kwargs and 'lng' in kwargs:
+                current['distance'] = measure_distance((kwargs['lat'], kwargs['lng']), (current['latitude'], current['longitude']))
 
         return current
 
-    def get_forecast(self, lat, lng):
+    def get_forecast(self, **kwargs):
+        """
+        parameters
+        ----------
+        id : int
+
+        lat : float
+        lng : float
+
+        address : str
+        """
         forecast = []
 
-        url = self.url_base + '%s,%s.json' % (lat, lng)
-
-        r = requests.get(url)
-        # return r.json()['forecast']
-        r = r.json()['forecast']['simpleforecast']['forecastday']
+        r = self._fetch_weather_data(**kwargs)
+        # return r['forecast']
+        r = r['forecast']['simpleforecast']['forecastday']
         # return r
 
         for f in r:
@@ -84,7 +132,27 @@ class WU:
 
         return forecast
 
-    def get_stations(self, lat, lng, max_distance=None):
+    def get_stations(self, **kwargs):
+        """
+        Parameters
+        ----------
+        lat : float
+        lng : float
+
+        address : str
+
+        max_distance : float, optional
+        """
+        if 'address' in kwargs:
+            coordinates = address2latlng(kwargs['address'])
+            lat = coordinates['data']['lat']
+            lng = coordinates['data']['lng']
+        else:
+            lat = kwargs['lat']
+            lng = kwargs['lng']
+
+        max_distance = kwargs['max_distance'] if 'max_distance' in kwargs else None
+
         stations = []
 
         url = self.url_lookup + '%s,%s.json' % (lat, lng)
@@ -115,4 +183,3 @@ class WU:
                     stations.append(remap_dict_columns(s, self.station_column_map))
 
         return sorted(stations, key=lambda k: int(k['distance_km']))
-

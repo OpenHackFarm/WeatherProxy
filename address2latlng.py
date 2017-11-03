@@ -21,11 +21,11 @@ def address2latlng(address):
         ret_json = {}
         ret_json['status'] = 'success'
         ret_json['data'] = {'lat': ajson["results"][0]["geometry"]["location"]["lat"], 'lng': ajson["results"][0]["geometry"]["location"]["lng"]}
-        return json.dumps(ret_json)
+        return ret_json
     else:
         ret_json = {}
         ret_json['status'] = 'error'
-        return json.dumps(ret_json)
+        return ret_json
 
 if __name__ == '__main__':
     print(address2latlng(sys.argv[1]))
