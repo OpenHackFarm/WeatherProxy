@@ -63,6 +63,16 @@ class CWB:
         "Wx": "condition"
     }
 
+    station_column_map = {
+        u"海拔高度(m)": "altitude_m",
+        u"地址": "address",
+        u"站名": "station_name",
+        u"站號": "station_id",
+        u"緯度": "latitude",
+        u"經度": "longitude",
+        u"城市": "city"
+    }
+
     def get_current(self, **kwargs):
         """
         Parameters
@@ -187,7 +197,7 @@ class CWB:
                     all_stations[i]['source'] = 'CWB'
                     all_stations[i]['current_api'] = u'http://weather-api.openhackfarm.tw/?backend=CWB&get=current&q={"name":"%s"}' % quote(all_stations[i][u'站名'].encode('utf-8'))
                     all_stations[i]['distance_km'] = distance_km
-                    # stations.append(remap_dict_columns(all_stations[i], self.station_column_map))
-                    stations.append(all_stations[i])
+                    stations.append(remap_dict_columns(all_stations[i], self.station_column_map))
+                    # stations.append(all_stations[i])
 
         return stations
