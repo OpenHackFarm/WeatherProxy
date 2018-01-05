@@ -180,6 +180,7 @@ class WU:
                     s['source'] = 'WU'
                     s['type'] = 'pws'
                     s['distance_km'] = distance_km
+                    s['current_api'] = 'http://weather-api.openhackfarm.tw/?backend=WU&get=current&q={"id":"%s:%s"}&key=%s' % (s['type'], s['id'], self.API_KEY)
                     stations.append(remap_dict_columns(s, self.station_column_map))
 
         return sorted(stations, key=lambda k: int(k['distance_km']))
