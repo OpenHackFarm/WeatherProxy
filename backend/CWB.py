@@ -19,6 +19,7 @@ sys.path.append('thirdparty/cwb-cache')
 import json
 from scipy import spatial
 import requests
+from urllib import quote
 
 from forecast_36hr import get_data_from_cwb, AUTH_KEY
 
@@ -184,6 +185,7 @@ class CWB:
                     pass
                 else:
                     all_stations[i]['source'] = 'CWB'
+                    all_stations[i]['current_api'] = u'http://weather-api.openhackfarm.tw/?backend=CWB&get=current&q={"name":"%s"}' % quote(all_stations[i][u'站名'].encode('utf-8'))
                     all_stations[i]['distance_km'] = distance_km
                     # stations.append(remap_dict_columns(all_stations[i], self.station_column_map))
                     stations.append(all_stations[i])
