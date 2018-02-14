@@ -198,7 +198,7 @@ class CWB:
                     all_stations[i]['source'] = 'CWB'
                     all_stations[i]['current_api'] = u'http://weather-api.openhackfarm.tw/?backend=CWB&get=current&q={"name":"%s"}' % quote(all_stations[i][u'站名'].encode('utf-8'))
                     all_stations[i]['distance_km'] = distance_km
-                    stations.append(remap_dict_columns(all_stations[i], self.station_column_map), drop=True)
+                    stations.append(remap_dict_columns(all_stations[i], self.station_column_map, drop=True))
                     # stations.append(all_stations[i])
 
         return stations
