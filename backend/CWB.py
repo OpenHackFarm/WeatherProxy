@@ -70,7 +70,8 @@ class CWB:
         u"站號": "station_id",
         u"緯度": "latitude",
         u"經度": "longitude",
-        u"城市": "city"
+        u"城市": "city",
+        u"資料起始日期": "start_date"
     }
 
     def get_current(self, **kwargs):
@@ -178,7 +179,7 @@ class CWB:
 
         stations = []
 
-        with open('data/CWB_Stations.json') as json_data:
+        with open('data/CWB_Stations_171226.json') as json_data:
             all_stations = json.load(json_data)
 
         all_coords = [(float(s[u'緯度']), float(s[u'經度'])) for s in all_stations]
