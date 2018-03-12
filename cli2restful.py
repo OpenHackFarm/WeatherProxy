@@ -13,6 +13,7 @@ PORT = '8001'
 app = Flask(__name__)
 CORS(app)
 
+RUN = None
 
 def urlQuery2argumentList(url_query_parameter):
     args = []
@@ -29,7 +30,7 @@ def urlQuery2argumentList(url_query_parameter):
 def hello():
     query = urlQuery2argumentList(request.args.items())
 
-    cmd = args.run + query
+    cmd = RUN + query
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
@@ -46,11 +47,19 @@ def hello():
         status=200
     )
 
+def main(run):
+    global RUN
+    RUN = run.split()
+
+    return app
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--run', nargs='+', type=str)
 
     args = parser.parse_args()
+
+    RUN = args.run
 
     app.run(host=HOST, port=PORT)

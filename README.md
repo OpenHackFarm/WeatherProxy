@@ -31,6 +31,10 @@ $ python cli2restful.py --run python main.py
 ```
 
 ```
+$ gunicorn -b 0.0.0.0:8001 'cli2restful:main(run="python main.py")'
+```
+
+```
 # All
 http://127.0.0.1:8001/?backend=CWB_with_OA&get=weather_demo
 
