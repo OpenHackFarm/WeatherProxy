@@ -172,10 +172,10 @@ class CWB:
             lat = coordinates['data']['lat']
             lng = coordinates['data']['lng']
         else:
-            lat = kwargs['lat']
-            lng = kwargs['lng']
+            lat = float(kwargs['lat'])
+            lng = float(kwargs['lng'])
 
-        max_distance = kwargs['max_distance'] if 'max_distance' in kwargs else None
+        max_distance = float(kwargs['max_distance']) if 'max_distance' in kwargs else None
 
         stations = []
 
@@ -195,7 +195,7 @@ class CWB:
                 if max_distance and max_distance < distance_km:
                     pass
                 else:
-                    new_station = remap_dict_columns(all_stations[i], self.station_column_map, drop=True) 
+                    new_station = remap_dict_columns(all_stations[i], self.station_column_map, drop=True)
                     new_station['source'] = 'CWB'
                     new_station['current_api'] = u'http://weather-api.openhackfarm.tw/?backend=CWB&get=current&q={"name":"%s"}' % quote(all_stations[i][u'站名'].encode('utf-8'))
                     new_station['distance_km'] = distance_km
