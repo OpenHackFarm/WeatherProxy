@@ -1,26 +1,23 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-# https://gist.github.com/carrl/7148143
-
 import sys
-import urllib
-import json
+import requests
+
+KEY = "eEabxujMEXil4kmoPwzbLjTAnN9tuUtr"
 
 
 def address2latlng(address):
-    url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&sensor=false&language=zh-tw"
+    url = "http://open.mapquestapi.com/geocoding/v1/address?key=" + KEY + "&location=" + address
 
-    res = urllib.urlopen(url)
+    r = requests.get(url)
 
-    ajson = json.load(res)
+    ajson = r.json()
 
-    res.close()
-
-    if (ajson["status"] == "OK"):
+    if (len(ajson["results"]) == 1):
         ret_json = {}
         ret_json['status'] = 'success'
-        ret_json['data'] = {'lat': ajson["results"][0]["geometry"]["location"]["lat"], 'lng': ajson["results"][0]["geometry"]["location"]["lng"]}
+        ret_json['data'] = {'lat': ajson["results"][0]["locations"][0]["latLng"]["lat"], 'lng': ajson["results"][0]["locations"][0]["latLng"]["lng"]}
         return ret_json
     else:
         ret_json = {}
